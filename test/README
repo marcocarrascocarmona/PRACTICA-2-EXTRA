@@ -1,0 +1,61 @@
+# Práctica ESP32 – Control de LED con Timer
+
+## Objetivo
+
+El objetivo de esta práctica es crear un programa para **ESP32 usando Arduino en PlatformIO** que controle un **LED y dos pulsadores** utilizando **interrupciones de un timer**.
+
+El LED debe parpadear a una frecuencia inicial.  
+Con un pulsador se **aumenta la frecuencia de parpadeo** y con el otro se **disminuye**.  
+Además, los pulsadores se leen dentro del timer y se aplica un **filtro de rebotes (debounce)**.
+
+---
+
+## Conexiones
+
+- **LED** → GPIO 2  
+- **Botón aumentar frecuencia** → GPIO 18  
+- **Botón disminuir frecuencia** → GPIO 19  
+
+Los pulsadores están configurados como `INPUT_PULLUP`, por lo que cuando se pulsan leen **LOW**.
+
+---
+
+## Funcionamiento del programa
+
+El programa utiliza un **timer hardware del ESP32** que genera una interrupción cada **1 ms**.  
+Cada vez que ocurre la interrupción se ejecuta la función `onTimer()`.
+
+Dentro de esta función se hacen tres cosas:
+
+1. Se incrementa un contador para controlar el **parpadeo del LED**.
+2. Se leen los **pulsadores**.
+3. Se aplica un **debounce por software** para evitar rebotes.
+
+La frecuencia de parpadeo se guarda en la variable `blinkFrequency`.  
+Si se pulsa el botón de subir frecuencia se incrementa el valor y si se pulsa el de bajar se decrementa, manteniéndose entre **1 y 10**.
+
+Cuando el contador alcanza un cierto valor calculado a partir de la frecuencia, el LED cambia de estado.
+
+---
+
+## Setup
+
+En `setup()` se configuran los pines, se inicializa el timer y se conecta la interrupción que ejecuta `onTimer()`.
+
+---
+
+## Loop
+
+La función `loop()` está vacía porque todo el funcionamiento del programa se controla mediante **interrupciones del timer**.
+
+---
+
+## Resultado
+
+Al cargar el programa en la ESP32:
+
+- El **LED parpadea** a una frecuencia inicial.
+- Al pulsar el botón de **subir frecuencia** el parpadeo se vuelve más rápido.
+- Al pulsar el botón de **bajar frecuencia** el parpadeo se vuelve más lento.
+
+El sistema funciona correctamente gracias al **filtro de rebotes implementado para los pulsadores**.
